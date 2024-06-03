@@ -6,7 +6,7 @@ type ConnectedState = { state: PEER_STATE_VALUE['CONNECTED'], address: string, p
 
 type PendingState = { state: PEER_STATE_VALUE['PENDING']};
 
-export type DisconnectedState = { state: PEER_STATE_VALUE['DISCONNECTED'], error: Event };
+export type DisconnectedState = { state: PEER_STATE_VALUE['DISCONNECTED'], error?: Event };
 
 
 

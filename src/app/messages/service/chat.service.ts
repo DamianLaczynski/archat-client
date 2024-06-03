@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { UDPService } from './udp.service';
 import { Message } from '../model/payload';
 import { PeersService } from './peers.service';
-import { Peer } from '../model/peer.state';
+import { DisconnectedState, Peer } from '../model/peer.state';
 import { Router, RouterLink } from '@angular/router';
 
 @Injectable({
@@ -11,11 +11,17 @@ import { Router, RouterLink } from '@angular/router';
 export class ChatService {
   private udpService = inject(UDPService);
   private peersService = inject(PeersService);
-  private routerLink = inject(Router);
+  private router = inject(Router);
   myNickname: string = 'guest';
   otherPeer?: Peer;
 
   peers$ = this.peersService.peers$;
+
+  private lastKeepalive = new Date().getTime();
+  keepInterval?: NodeJS.Timeout;
+  private checkInterval: any;
+  private readonly TIMEOUT = 10000; 
+  private readonly CHECK_INTERVAL = 2000; 
 
   peer?: Peer;
 
@@ -23,7 +29,24 @@ export class ChatService {
 
   messages$ = this.messageStack.asReadonly();
 
-  constructor() {}
+  constructor() {
+
+    this.udpService.onMessage((message) => {
+      console.log('New Message recive:');
+      console.log(message);
+      const newMessage = JSON.parse(message) as Message;
+      if(newMessage.content != '')
+        {
+          if (this.peer?.state.state == 'CONNECTED') {
+            this.peer.state.messages.push(newMessage);
+          }
+        }
+        else {
+          this.lastKeepalive = new Date().getTime();
+        }
+      
+    });
+  }
 
   start(nickname: string, peerAddress: string, myNickname: string) {
     this.myNickname = myNickname;
@@ -32,8 +55,18 @@ export class ChatService {
 
     this.udpService.configureClient();
 
-    this.routerLink.navigate(['chat', nickname]);
+    this.router.navigate(['chat', nickname]);
 
+    this.keepInterval = setInterval(()=> {
+      if(this.peer)
+        {
+          //keep message
+          this.send('', this.peer);
+        }
+    }, 1000)
+
+    
+    
     this.peersService.addPeer({
       id: nickname,
       state: {
@@ -44,14 +77,33 @@ export class ChatService {
       },
     });
 
-    this.udpService.onMessage((message) => {
-      console.log('New Message recive:');
-      console.log(message);
-      this.peers$.subscribe();
-      if (this.peer?.state.state == 'CONNECTED') {
-        this.peer.state.messages.push(JSON.parse(message) as Message);
+    
+    this.startCheckInterval();
+    
+  }
+
+  private startCheckInterval() {
+    this.checkInterval = setInterval(() => {
+      const currentTime = new Date().getTime();
+      if (currentTime - this.lastKeepalive > this.TIMEOUT) {
+        if(this.peer)
+          {
+            this.peer.state = { state: "DISCONNECTED", error: undefined} as DisconnectedState;
+          }
+        
+        this.router.navigate(['/chat']);
+        console.log(currentTime)
+        console.log(this.lastKeepalive)
+        console.error("T/0")
+        this.stopSendingKeepalive();
+        
       }
-    });
+    }, this.CHECK_INTERVAL);
+  }
+
+  stopSendingKeepalive() {
+    clearInterval(this.keepInterval);
+    clearInterval(this.checkInterval);
   }
 
   send(message: string, peer: Peer) {
@@ -62,7 +114,10 @@ export class ChatService {
         peer.state.port,
         peer.state.address
       );
-      peer.state.messages.push(newMessage);
+      if(message != '')
+        {
+          peer.state.messages.push(newMessage);
+        }
     }
   }
 }
