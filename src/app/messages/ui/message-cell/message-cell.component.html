@@ -1,0 +1,21 @@
+<div class="w-96 bg-none rounded-lg m-1" style="position: relative;">
+    <!-- @if (!notification.isRead) {
+    <div class="w-2 isReadIndicator bg-blue-600 h-2 rounded-full"></div>
+    } -->
+    <div class="flex flex-col gap-y-2 py-4">
+
+        <div class="flex flex-row justify-between gap-x-4 px-4 items-center bg-none">
+            <!-- <img class="w-8 h-8 rounded-full" src="../../../../../assets/profile.jpg" /> -->
+            <div class="">
+                <div class="font-semibold text-start">{{notification.nickname}}</div>
+                <!-- <div [className]="[notification.isRead ? 'text-gray-600 font-normal' : 'text-black font-medium']">{{notification.sender}}: {{notification.message}} </div> -->
+            </div>
+            <button class="rounded border-2 border-black px-2 py-1 font-medium hover:bg-gray-200" (click)="connect.emit(notification.nickname)">Connect</button>
+        </div>
+        
+        
+        <!-- <div class="flex flex-row pl-16 font-medium text-gray-400">
+            <div class="">{{timeAgo(notification.timestamp)}}</div>
+        </div> -->
+    </div>
+</div>
