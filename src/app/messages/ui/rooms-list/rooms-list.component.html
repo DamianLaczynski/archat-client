@@ -1,7 +1,8 @@
 <div class="flex flex-col bg-white h-full min-w-96">
     <!--Header-->
-    <div class="flex flex-row justify-start items-center p-2 px-3">
+    <div class="flex flex-row justify-between items-center p-2 px-3">
         <div class="text-2xl font-semibold">P2P Chat</div>
+        <button class="border-2 border-black font-medium px-2 p-1 rounded text-nowrap hover:bg-gray-200" (click)="refreshList.emit()">Refresh List</button>
     </div>
     <div class="w-full" style="border: 1px solid #969696;"></div>
     @if(chatState$ | async; as chatState)
@@ -23,7 +24,11 @@
 
         }
         @else {
-            <div class="mx-auto text-red-500 font-medium text-lg">Something went wrong</div>
+            <div class="flex flex-col items-center justify-center p-4">
+                <div class="mx-auto text-red-500 font-medium text-lg">Something went wrong</div>
+                <button class="border-2 border-black font-medium px-2 p-1 rounded text-nowrap hover:bg-gray-200" (click)="reconnect.emit()">Reconnect</button>
+            </div>
+            
         }
     }
     
@@ -33,6 +38,9 @@
     <div class="flex flex-col justify-center items-center">
         @for (peer of peers; track $index) {
             <app-message-cell (connect)="connect.emit($event)" [notification]="peer"></app-message-cell>
+        }
+        @empty {
+            <div class="font-medium"></div>
         }
     </div>
 </div>

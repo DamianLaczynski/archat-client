@@ -33,12 +33,22 @@ export interface PeerInfo {
 }
 
 export interface Peer {
-    nickname?: string,
+    id: string,
     address: string,
-    port: number
+    port: number,
+    connectionState?: PeerConnectionState,
 }
 
 export interface Message {
     author: string
     content: string
 }
+
+export type Connected = {state: "CONNECTED", address: string, port: number, messages: Message[]}
+
+export enum PeerConnectionState {
+    PENDING,
+    CONNECTED,
+    DISCONNECTED
+}
+

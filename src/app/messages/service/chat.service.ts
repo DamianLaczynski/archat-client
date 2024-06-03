@@ -1,15 +1,23 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { UDPService } from './udp.service';
-import { Message, Peer } from '../model/payload';
-import { BehaviorSubject } from 'rxjs';
+import { Message } from '../model/payload';
+import { PeersService } from './peers.service';
+import { Peer } from '../model/peer.state';
+import { Router, RouterLink } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
   private udpService = inject(UDPService);
+  private peersService = inject(PeersService);
+  private routerLink = inject(Router);
   myNickname: string = 'guest';
   otherPeer?: Peer;
+
+  peers$ = this.peersService.peers$;
+
+  peer?: Peer;
 
   messageStack = signal<Message[]>([]);
 
@@ -24,34 +32,37 @@ export class ChatService {
 
     this.udpService.configureClient();
 
-    this.otherPeer = {
-      nickname: nickname,
-      address: address[0],
-      port: Number(address[1]),
-    };
-    this.send(`hello from ${myNickname}`);
+    this.routerLink.navigate(['chat', nickname]);
 
-    //this.udpService.onMessage((message) => this.messageStack.next([...this.messageStack.value, message]));
+    this.peersService.addPeer({
+      id: nickname,
+      state: {
+        state: 'CONNECTED',
+        address: address[0],
+        port: Number(address[1]),
+        messages: [],
+      },
+    });
+
     this.udpService.onMessage((message) => {
+      console.log('New Message recive:');
       console.log(message);
-      this.messageStack.update((val) => {
-        return [...val, JSON.parse(message)];
-      });
+      this.peers$.subscribe();
+      if (this.peer?.state.state == 'CONNECTED') {
+        this.peer.state.messages.push(JSON.parse(message) as Message);
+      }
     });
   }
 
-  send(message: string) {
-    if (this.otherPeer) {
+  send(message: string, peer: Peer) {
+    if (peer.state.state == 'CONNECTED') {
       const newMessage: Message = { author: this.myNickname, content: message };
       this.udpService.sendMessage(
         JSON.stringify(newMessage),
-        this.otherPeer?.port,
-        this.otherPeer?.address
+        peer.state.port,
+        peer.state.address
       );
-      console.log(newMessage);
-      this.messageStack.update((val) => {
-        return [...val, newMessage];
-      });
+      peer.state.messages.push(newMessage);
     }
   }
 }

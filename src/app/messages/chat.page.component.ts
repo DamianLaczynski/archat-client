@@ -37,4 +37,8 @@ export class ChatPageComponent implements OnInit{
   {
     this.signalingService.getPeers();
   }
+  reconnect()
+  {
+    this.signalingService.connectToWebSocket();
+  }
 }

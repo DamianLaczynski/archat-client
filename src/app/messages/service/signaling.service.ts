@@ -8,8 +8,8 @@ import { PeersListService } from './chat-state.service';
 import { UDPService } from './udp.service';
 import { ChatService } from './chat.service';
 
-const WS_ENDPOINT = 'ws://localhost:8080/wsapi';
-const SIGNALING_SERVER_ADDRESS = 'localhost';
+const WS_ENDPOINT = 'ws://81.210.88.10:8080/wsapi';
+const SIGNALING_SERVER_ADDRESS = '81.210.88.10';
 const SIGNALING_SERVER_PORT = 8081;
 
 @Injectable({
@@ -28,7 +28,7 @@ export class SignalingService {
   peersList = this.peersListService.value$;
 
   constructor() {
-    this.webSocketService.connect(WS_ENDPOINT);
+    this.connectToWebSocket();
 
     this.webSocketService.getMessages().subscribe({
       next: (message) => {
@@ -51,7 +51,9 @@ export class SignalingService {
         }
         case("AUTH"):
         {
-          this.getPeers()
+          setInterval(() => {
+            this.getPeers();
+          }, 1000)
           break;
         }
         case("ERROR"):
@@ -67,6 +69,11 @@ export class SignalingService {
 
   }
 
+  connectToWebSocket()
+  {
+    this.webSocketService.closeConnection();
+    this.webSocketService.connect(WS_ENDPOINT);
+  }
 
   private messageMapper(data: any) {
     const payload = JSON.parse(data) as SignalingMsg;
@@ -84,7 +91,7 @@ export class SignalingService {
       }
       case MessageID.ListPeersResID: {
         if (payload.r?.peers) {
-          this.peersListService.setPeers(payload.r.peers)
+          this.peersListService.setPeers(payload.r.peers.filter((peer) => peer.nickname != this.clientNickname && peer.hasNickname == true))
         }
         break;
       }

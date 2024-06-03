@@ -1,5 +1,7 @@
+@if(peer)
+{
 <div class="parent h-full min-h-full min-w-96">
-    <div class="flex flex-row justify-center items-center w-full p-2 border-b-2">
+    <div class="flex flex-row justify-between items-center w-full p-2 border-b-2">
         <!--Avatar group-->
         <!-- <div class="flex flex-row justify-center items-center relative">
             <img class="w-7 h-7 rounded-full" src="../../../../../assets/profile.jpg" />
@@ -8,35 +10,39 @@
             <img class="w-7 h-7 rounded-full absolute left-14" src="../../../../../assets/profile.jpg" />
 
         </div> -->
+        <button class="px-2 py-1 rounded hover:bg-gray-200" [routerLink]="['/chat']">
+            <span class="text-2xl">Back</span>
+        </button>
         <div class="flex flex-col justify-center items-center">
-            @if (otherPeerName) {
-            <div class="text-black font-semibold text-2xl">{{otherPeerName}}</div>
-
-            }
-            @else {
-            <div class="text-black font-semibold text-2xl">-</div>
-            }
+            <div class="text-black font-semibold text-2xl">{{peer.id}}</div>
             <!-- <div class="text-gray-500">last seen 45 minutes ago</div> -->
         </div>
-        <!-- <button class="px-2 py-1 rounded hover:bg-gray-200">
+        <button class="px-2 py-1 rounded hover:bg-gray-200">
             <i class="text-2xl bi bi-three-dots"></i>
-        </button> -->
+        </button>
     </div>
-        @for (msg of messages(); track $index) {
-            <div class="flex flex-col h-full min-h-full my-auto px-2 py-3 gap-y-3">
-            @if(msg.author == myNick)
-            {
-                <div class="flex flex-row self-end">
-                    <div class="p-2 rounded-lg text-white font-light bg-blue-500">{{msg.content}}</div>
-                </div>
-            }
-            @else {
-                <div class="flex flex-row self-start">
-                    <div class="p-2 rounded-lg text-black font-light bg-gray-100">{{msg.author}}: {{msg.content}}</div>
-                </div>
+    @switch (peer.state.state) {
+        @case ('CONNECTED') {
+            <div class="flex flex-col h-full min-h-full my-auto px-2 py-3 gap-y-3 max-h-full overflow-y-auto">
+            @for (msg of peer.state.messages; track $index) {
+                
+                @if(msg.author == myNick)
+                {
+                    <div class="flex flex-row self-end">
+                        <div class="p-2 rounded-lg text-white font-light bg-blue-500">{{msg.content}}</div>
+                    </div>
+                }
+                @else {
+                    <div class="flex flex-row self-start">
+                        <div class="p-2 rounded-lg text-black font-light bg-gray-100">{{msg.author}}: {{msg.content}}</div>
+                    </div>
+                }
+          
             }
         </div>
         }
+    }
+        
         
     <form [formGroup]="messageForm" class="flex flex-row justify-between items-center border-t-2 w-full px-1">
         <!-- <button class="px-2 my-1 bi bi-emoji-smile rounded hover:bg-gray-200" style="font-size: 28px;"></button> -->
@@ -47,3 +53,4 @@
         </div>
     </form>
 </div>
+}

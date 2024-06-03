@@ -6,7 +6,7 @@ const dgram = require('dgram');
 let mainWindow;
 let udpClient;
 let clientPort = 0; // Default port
-let clientHost = 'localhost'; // Default host
+let clientHost = '127.0.0.1'; // Default host
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -48,7 +48,7 @@ function initializeUdpClient() {
     udpClient.close();
   }
   udpClient = dgram.createSocket('udp4');
-  udpClient.bind(clientPort, clientHost, () => {
+  udpClient.bind(clientPort, () => {
     console.log(`Client bound to ${udpClient.address().port}:${clientPort}`);
   });
 

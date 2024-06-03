@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -13,6 +14,7 @@ export class WebSocketService {
   }
 
   public connect(url: string): void {
+
     this.socket = new WebSocket(url);
 
     this.socket.onopen = (event) => {
@@ -20,6 +22,7 @@ export class WebSocketService {
     };
 
     this.socket.onmessage = (messageEvent) => {
+      console.log(messageEvent)
       this.messageSubject.next(messageEvent.data);
     };
 

@@ -3,8 +3,7 @@ const PROXY_CONFIG = [
     context: [
       "/wsapi"
     ],
-    target: "ws://localhost:8080",
-    secure: false, 
+    target: "ws://krzyzanowski.dev:8080",
   }
 ]
 

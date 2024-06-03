@@ -16,6 +16,8 @@ export class RoomsListComponent {
   @Output() login = new EventEmitter<{nickname: string, password: string}>();
   @Output() connect = new EventEmitter<string>();
   @Output() refreshList = new EventEmitter();
+  @Output() reconnect = new EventEmitter();
+
 
   private signalingService = inject(SignalingService);
 
