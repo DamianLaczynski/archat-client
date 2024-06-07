@@ -18,9 +18,9 @@ export class ChatPageComponent implements OnInit{
 
   peersList$ = this.signalingService.peersList;
 
-  isConnectedToPeer: boolean = this.signalingService.clientNickname ? true : false;
-  ngOnInit(): void {
-    //this.chatsService.getMessages().subscribe((val) => console.log(val))
+  ngOnInit(): void 
+  {
+
   }
 
   login(payload: {nickname: string, password: string})
@@ -33,10 +33,6 @@ export class ChatPageComponent implements OnInit{
     this.signalingService.createConnectionOffer(nickname);
   }
 
-  refreshList()
-  {
-    this.signalingService.getPeers();
-  }
   reconnect()
   {
     this.signalingService.connectToWebSocket();

@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges, computed, inject } 
 import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ChatService } from '../../service/chat.service';
 import { AsyncPipe } from '@angular/common';
-import { Message } from '../../model/payload';
+import { Message } from '../../model/messages';
 import { PEER_STATE_VALUE, Peer } from '../../model/peer.state';
 import { RouterLink } from '@angular/router';
 
@@ -21,9 +21,8 @@ export class ChatComponent implements OnInit, OnChanges {
   @Input() id?: string;
   private formBuilder = inject(NonNullableFormBuilder);
   private chatService = inject(ChatService);
-  otherPeerName?: string = this.chatService.otherPeer?.id;
+
   myNick = this.chatService.myNickname;
-  messages = computed(() => this.chatService.messages$());
 
   messageForm: MessageForm = this.formBuilder.group({
     message: this.formBuilder.control<string>('', Validators.required)
@@ -40,6 +39,7 @@ export class ChatComponent implements OnInit, OnChanges {
         }
     }})
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     
   }
@@ -52,6 +52,5 @@ export class ChatComponent implements OnInit, OnChanges {
         this.chatService.send(this.messageForm.controls.message.value, this.peer)
         this.messageForm.reset();
       }
-    
   }
 }

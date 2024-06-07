@@ -1,8 +1,5 @@
-
-
 @if (peersList$ | async; as peersList) {
     <div class="h-full">
-        <app-rooms-list (refreshList)="refreshList()" (reconnect)="reconnect()" (connect)="connect($event)" (login)="login($event)" [peers]="peersList.peers"></app-rooms-list>
+        <app-rooms-list (reconnect)="reconnect()" (connect)="connect($event)" (login)="login($event)" [peers]="peersList.peers"></app-rooms-list>
     </div>
 }
-

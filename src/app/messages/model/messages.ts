@@ -1,3 +1,5 @@
+import { PeerInfo } from "./peer"
+
 export interface SignalingMsg {
     id: MessageID,
     r?: {
@@ -25,20 +27,6 @@ export enum MessageID {
 	StartChatFinishReqID = 8
 }
 
-export interface PeerInfo {
-    id: number,
-    addr: string,
-    hasNickname: boolean,
-    nickname?: string
-}
-
-export interface Peer {
-    id: string,
-    address: string,
-    port: number,
-    connectionState?: PeerConnectionState,
-}
-
 export interface Message {
     author: string
     content: string
@@ -46,9 +34,4 @@ export interface Message {
 
 export type Connected = {state: "CONNECTED", address: string, port: number, messages: Message[]}
 
-export enum PeerConnectionState {
-    PENDING,
-    CONNECTED,
-    DISCONNECTED
-}
 

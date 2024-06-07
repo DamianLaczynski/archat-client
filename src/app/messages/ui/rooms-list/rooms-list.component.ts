@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MessageCellComponent } from '../message-cell/message-cell.component';
-import { PeerInfo } from '../../model/payload';
 import { AsyncPipe } from '@angular/common';
 import { SignalingService } from '../../service/signaling.service';
+import { PeerInfo } from '../../model/peer';
 
 @Component({
   selector: 'app-rooms-list',

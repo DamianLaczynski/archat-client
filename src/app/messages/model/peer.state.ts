@@ -1,4 +1,4 @@
-import { Message } from "./payload";
+import { Message } from "./messages";
 
 export type IdleState = { state: PEER_STATE_VALUE['IDLE'] };
 
