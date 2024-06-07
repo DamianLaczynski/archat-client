@@ -2,7 +2,11 @@
 
 ###
 
-<p align="start">Implementation of a web client for the ARchat server, which provides information exchange about the peers' connection</p>
+<p align="start">Implementation of a web client for the ARchat server, which provides information exchange about the peers' connection.</p>
+
+> [!IMPORTANT] 
+> Project dependent on project [ARchat Server](https://github.com/originalmk/archat-server)
+
 
 ###
 
@@ -52,8 +56,10 @@ This command will:
 Build the Angular project with the base href set to ./.
 Launch the Electron application.
 
-App was automaticaly connected with ARchat server on `81.210.88.10`. For using with own instance of server change WS_ENDPOINT and SIGNALING_SERVER_ADDRESS in signaling.service.ts file.
-Implementation of the server you can find at [ARchat Server](https://github.com/originalmk/archat-server)
+> [!TIP]
+> App was automaticaly connected with ARchat server on `81.210.88.10`. For using with own instance of server change WS_ENDPOINT and SIGNALING_SERVER_ADDRESS in signaling.service.ts file.
+> 
+> Implementation of the server you can find at [ARchat Server](https://github.com/originalmk/archat-server)
 
 ### Other Useful Commands
 
